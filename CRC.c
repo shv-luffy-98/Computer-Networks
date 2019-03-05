@@ -53,8 +53,8 @@ int sender(int data[])
 	printf("\nThe message with CRC : ");
 	for (i = 0; i < end; ++i)
 		printf("%d ", data[i]);
-
-    return n;
+	
+	return n;
 }
 
 void transmit(int data[], int n)
