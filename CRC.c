@@ -1,21 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct reg
-{
-	int bit;
+struct {
+    int bit; 
 }r[16];
 
-int n, end;
-
-void crc(int data[])
+void crc(int data[], int n)
 {
-	int feedback, i, j;
+	int feedback, i, j, end = n + 16;
 
 	for (i = 0; i < 16; ++i)
 		r[i].bit = 0;
 
-	for (i = 0; i< end; ++i)
+	for (i = 0; i < end; ++i)
 	{
 		feedback = r[15].bit;
 		for (j = 15; j >= 0; --j)
@@ -30,79 +27,80 @@ void crc(int data[])
 		}
 	}
 
-	printf("Register content :\n");
-	for (int i = 15; i >= 0; --i)
+	printf("Register content : ");
+	for (i = 15; i >= 0; --i)
 		printf("%d ", r[i].bit);
 
-	for (i = n, j = 16; i< end; ++i)
+	for (i = n, j = 16; i < end; ++i)
 		data[i] = r[--j].bit;
-
-	printf("\nThe message with CRC:\n");
-	for (i = 0; i < end; ++i)
-		printf("%d ", data[i]);
 }
-void sender(int data[])
+
+int sender(int data[])
 {
-	int i;
-	printf("Sender : \n");
-	printf("Enter the number of bits of data: ");
-	scanf_s("%d", &n);
+	int i, n, end;
+	printf("Enter number of bits : ");
+	scanf("%d", &n);
 	end = n + 16;
 
-	printf("Enter the data :");
-	for (int i = 0; i<n; i++)
-		scanf_s("%d", &data[i]);
+	printf("Enter data : ");
+	for ( i = 0; i < n; ++i)
+		scanf("%d", &data[i]);
 
-	for (i = n; i < end; ++i)
+	for ( i = n; i < end; ++i)
 		data[i] = 0;
-	crc(data);
+	crc(data, n);
+    
+	printf("\nThe message with CRC : ");
+	for (i = 0; i < end; ++i)
+		printf("%d ", data[i]);
+
+    return n;
 }
-void transmit(int data[])
+
+void transmit(int data[], int n)
 {
 	int ch, pos;
-	printf("\n\nData being transmitted.");
-	printf("\nDo you want to corrupt the data? Yes = 1 / No = 0 :");
-	scanf_s("%d", &ch);
-	do
-	{
-		printf("Enter the bit position between 0 to %d : ", n + 15);
-		scanf_s("%d", &pos);
-		if (data[pos] == 0)
-			data[pos] = 1;
-		else
-			data[pos] = 0;
-		printf("Do you want to corrupt another data bit? Yes = 1 / No = 0 :");
-		scanf_s("%d", &ch);
-	} while (ch);
+	printf("\n\nSending");
+	printf("\nDo you want to corrupt the data?\n1. Yes\n2. No\nChoice : ");
+	scanf("%d", &ch);
+    if(ch != 1)
+        return;
+    printf("Enter the bit position between 0 to %d : ", 15);
+    scanf("%d", &pos);
+    if (data[20 - pos] == 0)
+        data[20 - pos] = 1;
+    else
+        data[20 - pos] = 0;
 }
-int errorCheck()
+
+void errorCheck()
 {
 	printf("\nError check:\n");
 	for (int i = 15; i >= 0; --i)
 		if (r[i].bit != 0)
 		{
-			printf("Data has been altered.");
-			printf("Position : %d", i);
-			return 1;
+			printf("Data has been altered at %d", i);
+			return;
 		}
-	return 0;
+    printf("Data has not been altered");
 }
-void receive(int data[])
+
+void receive(int data[], int n)
 {
-	printf("\nReceiver side : \n");
-	printf("Message received:\n");
-	for (int i = 0; i<n + 16; i++)
+    int i, end = n + 16;
+	printf("\nMessage received : ");
+	for (i = 0; i < end; ++i)
 		printf("%d ", data[i]);
 	printf("\n");
-	crc(data);
-	if(!errorCheck())
-		printf("Received data is unaltered.");
+	crc(data, n);
+	errorCheck();
 }
+
 int main()
 {
-	int data[100], i; 
-	sender(data);
-	transmit(data);
-	receive(data);
+	int data[100], n; 
+	n = sender(data);
+	transmit(data, n);
+	receive(data, n);
 	return 0;
 }
