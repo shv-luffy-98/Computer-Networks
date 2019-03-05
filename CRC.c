@@ -15,7 +15,7 @@ void crc(int data[], int n)
 	for (i = 0; i < end; ++i)
 	{
 		feedback = r[15].bit;
-		for (j = 15; j >= 0; --j)
+		for (j = 15; j > 0; --j)
 			r[j].bit = r[j - 1].bit;
 
 		r[0].bit = data[i];
