@@ -63,14 +63,14 @@ void transmit(int data[], int n)
 	printf("\n\nSending");
 	printf("\nDo you want to corrupt the data?\n1. Yes\n2. No\nChoice : ");
 	scanf("%d", &ch);
-    if(ch != 1)
-        return;
-    printf("Enter the bit position between 0 to %d : ", 15);
-    scanf("%d", &pos);
-    if (data[20 - pos] == 0)
-        data[20 - pos] = 1;
-    else
-        data[20 - pos] = 0;
+	if(ch != 1)
+		return;
+	printf("Enter the bit position between 0 to %d : ", 15);
+	scanf("%d", &pos);
+	if (data[20 - pos] == 0)
+		data[20 - pos] = 1;
+	else
+		data[20 - pos] = 0;
 }
 
 void errorCheck()
@@ -82,12 +82,12 @@ void errorCheck()
 			printf("Data has been altered at %d", i);
 			return;
 		}
-    printf("Data has not been altered");
+	printf("Data has not been altered");
 }
 
 void receive(int data[], int n)
 {
-    int i, end = n + 16;
+	int i, end = n + 16;
 	printf("\nMessage received : ");
 	for (i = 0; i < end; ++i)
 		printf("%d ", data[i]);
