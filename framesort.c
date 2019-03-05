@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 typedef struct
 {
@@ -42,7 +43,9 @@ int main()
     char msg[100];
     int framesize, ch, nof;
     Frame frames[10];
-
+    time_t t;
+    srand(time(&t));
+    
     printf("1. Fixed frame size\n2. Fixed frame count\n3. Exit\nChoice : ");
     scanf("%d", &ch);
     if(ch != 2 && ch != 1)
